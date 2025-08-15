@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="ur5e" params="prefix">
+    <!-- UR5e robot macro for SNP blending workcell -->
+    
+    <!-- Base link -->
+    <link name="${prefix}base_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 ${radians(180)}"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/visual/base.dae"/>
+        </geometry>
+        <material name="blue">
+          <color rgba="0 0 1 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 ${radians(180)}"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/collision/base.stl"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <!-- Shoulder link -->
+    <link name="${prefix}shoulder_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 ${radians(180)}"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/visual/shoulder.dae"/>
+        </geometry>
+        <material name="blue"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 ${radians(180)}"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/collision/shoulder.stl"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <!-- Upper arm link -->
+    <link name="${prefix}upper_arm_link">
+      <visual>
+        <origin xyz="0 0 0.138" rpy="${radians(90)} 0 ${radians(-90)}"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/visual/upperarm.dae"/>
+        </geometry>
+        <material name="blue"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.138" rpy="${radians(90)} 0 ${radians(-90)}"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/collision/upperarm.stl"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <!-- Forearm link -->
+    <link name="${prefix}forearm_link">
+      <visual>
+        <origin xyz="0 0 0.007" rpy="${radians(90)} 0 ${radians(-90)}"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/visual/forearm.dae"/>
+        </geometry>
+        <material name="blue"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.007" rpy="${radians(90)} 0 ${radians(-90)}"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/collision/forearm.stl"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <!-- Wrist 1 link -->
+    <link name="${prefix}wrist_1_link">
+      <visual>
+        <origin xyz="0 0 -0.127" rpy="${radians(90)} 0 0"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/visual/wrist1.dae"/>
+        </geometry>
+        <material name="blue"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 -0.127" rpy="${radians(90)} 0 0"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/collision/wrist1.stl"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <!-- Wrist 2 link -->
+    <link name="${prefix}wrist_2_link">
+      <visual>
+        <origin xyz="0 0 -0.0997" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/visual/wrist2.dae"/>
+        </geometry>
+        <material name="blue"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 -0.0997" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/collision/wrist2.stl"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <!-- Wrist 3 link -->
+    <link name="${prefix}wrist_3_link">
+      <visual>
+        <origin xyz="0 0 -0.0989" rpy="${radians(90)} 0 0"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/visual/wrist3.dae"/>
+        </geometry>
+        <material name="blue"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 -0.0989" rpy="${radians(90)} 0 0"/>
+        <geometry>
+          <mesh filename="package://snp_blending/urdf/ur5e/collision/wrist3.stl"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <!-- Tool0 link -->
+    <link name="${prefix}tool0"/>
+    
+    <!-- shoulder_pan_joint base_link -> shoulder_link -->
+    <joint name="${prefix}shoulder_pan_joint" type="revolute">
+      <parent link="${prefix}base_link"/>
+      <child link="${prefix}shoulder_link"/>
+      <origin xyz="0 0 0.1625" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="${radians(-360)}" upper="${radians(360)}" effort="150" velocity="${radians(180)}"/>
+      <value>1.5708</value>
+    </joint>
+    
+    <!-- shoulder_lift_joint shoulder_link -> upper_arm_link -->
+    <joint name="${prefix}shoulder_lift_joint" type="revolute">
+      <parent link="${prefix}shoulder_link"/>
+      <child link="${prefix}upper_arm_link"/>
+      <origin xyz="0 0 0" rpy="${radians(90)} 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="${radians(-360)}" upper="${radians(360)}" effort="150" velocity="${radians(180)}"/>
+    </joint>
+    
+    <!-- elbow_joint upper_arm_link -> forearm_link -->
+    <joint name="${prefix}elbow_joint" type="revolute">
+      <parent link="${prefix}upper_arm_link"/>
+      <child link="${prefix}forearm_link"/>
+      <origin xyz="-0.425 0 0" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="${radians(-180)}" upper="${radians(180)}" effort="150" velocity="${radians(180)}"/>
+    </joint>
+    
+    <!-- wrist_1_joint forearm_link -> wrist_1_link -->
+    <joint name="${prefix}wrist_1_joint" type="revolute">
+      <parent link="${prefix}forearm_link"/>
+      <child link="${prefix}wrist_1_link"/>
+      <origin xyz="-0.3922 0 0.1333" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="${radians(-360)}" upper="${radians(360)}" effort="28" velocity="${radians(180)}"/>
+    </joint>
+    
+    <!-- wrist_2_joint wrist_1_link -> wrist_2_link -->
+    <joint name="${prefix}wrist_2_joint" type="revolute">
+      <parent link="${prefix}wrist_1_link"/>
+      <child link="${prefix}wrist_2_link"/>
+      <origin xyz="0 -0.0997 0" rpy="${radians(90)} 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="${radians(-360)}" upper="${radians(360)}" effort="28" velocity="${radians(180)}"/>
+    </joint>
+    
+    <!-- wrist_3_joint wrist_2_link -> wrist_3_link -->
+    <joint name="${prefix}wrist_3_joint" type="revolute">
+      <parent link="${prefix}wrist_2_link"/>
+      <child link="${prefix}wrist_3_link"/>
+      <origin xyz="0 0.0996 0" rpy="${radians(90)} ${radians(180)} ${radians(180)}"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="${radians(-360)}" upper="${radians(360)}" effort="28" velocity="${radians(180)}"/>
+    </joint>
+    
+    <!-- wrist_3_joint-tool0 wrist_3_link -> tool0 -->
+    <joint name="${prefix}wrist_3_joint-tool0" type="fixed">
+      <parent link="${prefix}wrist_3_link"/>
+      <child link="${prefix}tool0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+    
+  </xacro:macro>
+</robot>

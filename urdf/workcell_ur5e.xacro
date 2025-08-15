@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+<robot name="ur5e" xmlns:xacro="http://ros.org/wiki/xacro" xmlns:tesseract="https://github.com/tesseract-robotics/tesseract" tesseract:make_convex="true">
+
+  <xacro:macro name="cuboid" params="name l w h material offset=False">
+    <link name="${name}">
+      <visual>
+        <xacro:if value="${offset}" >
+          <origin xyz="${l / 2.0} ${w / 2.0} ${-h / 2.0}" />
+        </xacro:if>
+        <geometry>
+          <box size="${l} ${w} ${h}"/>
+        </geometry>
+        <material name="${material}"/>
+      </visual>
+      <collision>
+        <xacro:if value="${offset}" >
+          <origin xyz="${l / 2.0} ${w / 2.0} ${-h / 2.0}" />
+        </xacro:if>
+        <geometry>
+          <box size="${l} ${w} ${h}"/>
+        </geometry>
+        <material name="${material}"/>
+      </collision>
+    </link>
+  </xacro:macro>
+
+  <xacro:include filename="$(find snp_blending)/urdf/ros2_control_ur5e.xacro"/>
+  <xacro:snp_blending_ros2_control_ur5e name="SNP Blending ROS2 Control UR5e" prefix=""/>
+
+  <xacro:include filename="ur5e/ur5e_macro.xacro"/>
+  <xacro:ur5e prefix=""/>
+
+  <material name="light_gray">
+    <color rgba="0.7 0.7 0.7 1"/>
+  </material>
+
+  <material name="dark_gray">
+    <color rgba="0.3 0.3 0.3 1"/>
+  </material>
+
+  <link name="floor"/>
+
+  <xacro:property name="platform_length" value="1.61"/>
+  <xacro:property name="platform_width" value="1.21"/>
+  <xacro:property name="platform_height" value="0.8"/>
+  <xacro:cuboid name="platform" l="${platform_length}" w="${platform_width}" h="${platform_height}" material="dark_gray" offset="True"/>
+
+  <joint name="floor_to_platform" type="fixed">
+    <parent link="floor"/>
+    <child link="platform"/>
+    <origin xyz="0 0 ${platform_height}" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="platform_to_base" type="fixed">
+    <parent link="platform"/>
+    <child link="base_link"/>
+    <origin xyz="1.0 0.5 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Camera Calibration - Using hardcoded values from calibration.yaml -->
+  <link name="camera_color_optical_frame"/>
+  <joint name="tool0_to_camera" type="fixed">
+    <parent link="tool0"/>
+    <child link="camera_color_optical_frame"/>
+    <origin xyz="-0.009463772255651237 -0.1031312457873824 0.03876615960446108" rpy="1.583081030251112 -3.122182762672128 0.002948343264348896" />
+  </joint>
+
+  <link name="cal_target_frame"/>
+  <joint name="target_mount_to_target" type="fixed">
+    <parent link="base_link"/>
+    <child link="cal_target_frame"/>
+    <origin xyz="1.60586104034503 -0.05503244317187262 0.3255638469473136" rpy="3.138265142744211 -3.139826528288589 3.120448851082269" />
+  </joint>
+
+  <link name="buffy_tcp"/>
+  <joint name="buffy_tcp_joint" type="fixed">
+    <parent link="tool0"/>
+    <child link="buffy_tcp"/>
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+  </joint>
+
+</robot>
